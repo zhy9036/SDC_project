@@ -4,7 +4,7 @@ import urllib.request
 from threading import Timer
 import json
 import RPi.GPIO as GPIO
-import time
+import time, threading
 
 pin_arry = [14, 15, 18]
 pre = 0
@@ -74,8 +74,12 @@ def exe_config(current_config):
 	elif current_config in range(1, 6):
 		if not running_blink and not running_light:
 			if pre == current_config - 1:
-				job_light = thd.start_new_thread(light_up, (pin_arry[pre], 3))
-				job_blink = thd.start_new_thread(blink, ([x for x in pin_arry if not x==pin_arry[pre]], 3, time.time()))
+				#job_light = thd.start_new_thread(light_up, (pin_arry[pre], 3))
+				#job_blink = thd.start_new_thread(blink, ([x for x in pin_arry if not x==pin_arry[pre]], 3, time.time()))
+				job_light = threading.Thread(target=light_up, args=(pin_arry[pre], 3))
+				job_blink = threading.Thread(target=blink, args=([x for x in pin_arry if not x==pin_arry[pre]], 3, time.time()))
+				job_light.start()
+				job_blink.start()
 				pre = current_config
 				print('updated: ',current_config, end='\r')
 			else:
