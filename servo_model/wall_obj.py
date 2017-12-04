@@ -38,16 +38,24 @@ class SDC_wall:
 		self.edge_dict = edge_dict
 		self.config_dict = config_dict
 		self.max_config = max_config
-		self.setup_GPIO(GPIO.BCM, self.pin_list)
+		#self.setup_GPIO(GPIO.BCM, self.pin_list)
 		self.pi = pigpio.pi()
-		
+		self.setup_GPIO_new()
 		
 	def __del__(self):
 		self.cleanup_GPIO(self.pin_list)
-		
-	def setup_GPIO_new(self, mode, pins):
+	
+	def cleanup(self):
 		for pin in self.pin_list:
-			self.pi.setup(pin, pigpio.OUTPUT)
+			self.pi.set_mode(pin, pigpio.INPUT)
+			self.pi.stop()
+		#self.pi.close()
+	
+	def setup_GPIO_new(self):
+		for pin in self.pin_list:
+			self.pi.set_mode(pin, pigpio.OUTPUT)
+			self.pi.set_PWM_frequency(pin, 50)
+			
 
 	def setup_GPIO(self, mode, pins):
 		GPIO.cleanup()
@@ -61,7 +69,7 @@ class SDC_wall:
 			GPIO.output(pin, False)
 		GPIO.cleanup()
 
-	def move_servo(self, pin, speed, duration):
+	def move_servo_old(self, pin, speed, duration):
 		pin_pwm =  GPIO.PWM(pin, 50)
 		pin_pwm.start(0)
 		duty = speed/ 18 + 2
@@ -72,16 +80,11 @@ class SDC_wall:
 		pin_pwm.stop()
 		GPIO.output(pin, False)
 	
-	def move_servo_new(self, pin, speed, duration):
-		pin_pwm =  GPIO.PWM(pin, 50)
-		pin_pwm.start(0)
-		duty = speed/ 18 + 2
-		GPIO.output(pin, True)
-		pin_pwm.ChangeDutyCycle(duty)
+	def move_servo(self, pin, angle, duration):
+		pw = 1000 + int(float(angle) * 5.56)
+		self.pi.set_servo_pulsewidth(pin, pw)
 		sleep(duration)
-		pin_pwm.ChangeDutyCycle(0)
-		pin_pwm.stop()
-		GPIO.output(pin, False)	
+		self.pi.set_servo_pulsewidth(pin, 1500)
 		
 	def edge_action(self, edge, action):
 		pins= self.edge_dict[edge]['pins']
@@ -140,6 +143,7 @@ class SDC_wall:
 		
 	def exe_config(self, config):
 		self.gen_job_queue(config)
+		#print(self.job_queue)
 		if self.job_queue == []:
 			print("No job to do, stand by...", end = '\r')
 			return

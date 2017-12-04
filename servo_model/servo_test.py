@@ -1,11 +1,17 @@
 from tkinter import *
 import RPi.GPIO as GPIO
+import pigpio
 import time
 
-GPIO.setmode(GPIO.BCM)
-GPIO.setup(3, GPIO.OUT)
-pwm = GPIO.PWM(3, 100)
-pwm.start(5)
+pi = pigpio.pi()
+pi.set_mode(21, pigpio.OUTPUT)
+pi.set_PWM_frequency(21, 50)
+#pi.set_mode(21, pigpio.INPUT)
+#pi.stop()
+#GPIO.setmode(GPIO.BCM)
+#GPIO.setup(21, GPIO.OUT)
+#pwm = GPIO.PWM(21, 50)
+#pwm.start(5)
 
 class App:
 
@@ -18,8 +24,12 @@ class App:
 
 
     def update(self, angle):
-        duty = float(angle) / 10.0 + 2.5
-        pwm.ChangeDutyCycle(duty)
+        #duty = float(angle) / 18+ 2
+        #pwm.ChangeDutyCycle(duty)
+        #pi.set_PWM_dutycycle(21, duty)
+        pw = 1000 + int(float(angle) * 5.56)
+        print(pw)
+        pi.set_servo_pulsewidth(21, pw)
 
 root = Tk()
 root.wm_title('Servo Control')

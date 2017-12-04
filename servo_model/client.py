@@ -2,7 +2,7 @@ from wall_obj import *
 import requests
 import urllib.request as req
 from threading import Timer
-import json
+import json, signal
 pre = -1
 wall = SDC_wall()
 
@@ -53,6 +53,7 @@ def service():
 	rst = req.urlopen("http://andrewlewis.pythonanywhere.com/currentWall").read()
 	rst = json.loads(rst.decode("utf-8"))	#bytes to string
 	current_config = rst['currentWall']
+	#print(current_config)
 	if pre != current_config:
 		pre = current_config
 		if current_config == 0:
@@ -60,13 +61,22 @@ def service():
 		else:
 			wall.exe_config(current_config)
 	#print(current_config)
+	
+def handler(signum, frame):
+		print('exiting... clean up GPIO pins ...')
+		wall.cleanup()
+		print('cleaned')
+
 def run():
-	print('Resetting...', end='\r')
+	global pre
+	signal.signal(signal.SIGINT, handler)
+	print('\nResetting...', end='\r')
 	code = reset_model()	
 	if code != 201:
 		print('Resetting faild! Error response code %d'%code)
 		return
 	print('Resetting... Successed! reset to 0', end='\r\n')
+	pre = 0
 	scheduler = RepeatedTimer(1, service)
 
 	
