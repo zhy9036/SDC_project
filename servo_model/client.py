@@ -51,7 +51,7 @@ def service():
 	rst = req.urlopen("http://andrewlewis.pythonanywhere.com/currentWall").read()
 	rst = json.loads(rst.decode("utf-8"))	#bytes to string
 	current_config = rst['currentWall']
-	wall.job_queue == []:
+	if wall.job_queue == []:
 		wall.exe_config(current_config)
 	#print(current_config)
 def run():
