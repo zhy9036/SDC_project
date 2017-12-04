@@ -63,7 +63,7 @@ class SDC_wall:
 		pin_pwm.ChangeDutyCycle(duty)
 		sleep(duration)
 		pin_pwm.ChangeDutyCycle(0)
-		pin_pwm.stop()
+		#pin_pwm.stop()
 		GPIO.output(pin, False)
 		
 		
