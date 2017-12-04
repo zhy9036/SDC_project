@@ -128,11 +128,11 @@ class SDC_wall:
 		s_t = time()
 		while(job_queue != []):
 			if self.is_running():
-				print("Wall is moving, config %d" % current_config, end='\r')
+				print("Wall is moving, config %d" % self.current_config, end='\r')
 				continue
 			cur = job_queue[0]
 			job_queue = job_queue[1:]
-			print("Executing config %d" % current_config, end='\r')
+			print("Executing config %d" % self.current_config, end='\r')
 			if cur == 0: # resetting
 				self.reset()
 			else:
