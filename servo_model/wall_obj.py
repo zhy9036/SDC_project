@@ -2,6 +2,7 @@
 # Yang Zhang
 # import libs
 """
+import pigpio
 from enum import Enum
 import _thread
 import threading
@@ -38,10 +39,15 @@ class SDC_wall:
 		self.config_dict = config_dict
 		self.max_config = max_config
 		self.setup_GPIO(GPIO.BCM, self.pin_list)
+		self.pi = pigpio.pi()
 		
 		
 	def __del__(self):
 		self.cleanup_GPIO(self.pin_list)
+		
+	def setup_GPIO_new(self, mode, pins):
+		for pin in self.pin_list:
+			self.pi.setup(pin, pigpio.OUTPUT)
 
 	def setup_GPIO(self, mode, pins):
 		GPIO.cleanup()
@@ -63,9 +69,19 @@ class SDC_wall:
 		pin_pwm.ChangeDutyCycle(duty)
 		sleep(duration)
 		pin_pwm.ChangeDutyCycle(0)
-		#pin_pwm.stop()
+		pin_pwm.stop()
 		GPIO.output(pin, False)
-		
+	
+	def move_servo_new(self, pin, speed, duration):
+		pin_pwm =  GPIO.PWM(pin, 50)
+		pin_pwm.start(0)
+		duty = speed/ 18 + 2
+		GPIO.output(pin, True)
+		pin_pwm.ChangeDutyCycle(duty)
+		sleep(duration)
+		pin_pwm.ChangeDutyCycle(0)
+		pin_pwm.stop()
+		GPIO.output(pin, False)	
 		
 	def edge_action(self, edge, action):
 		pins= self.edge_dict[edge]['pins']
