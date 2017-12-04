@@ -29,7 +29,7 @@ class SDC_wall:
 	def __init__(self, pin_list=default_pin_list, 
 		edge_dict=default_edge_dict, config_dict=default_config_dict, 
 		max_config=default_max_config):
-		self.curent_config = 0
+		self.current_config = 0
 		thread_list = []
 		self.pin_list = pin_list
 		self.edge_dict = edge_dict
