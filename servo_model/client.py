@@ -41,6 +41,7 @@ def run_config(config):
 		_thread.start_new_thread(self.move_servo, (pin, spd, timer))
 
 def reset_model():
+	wall.reset()
 	headers = {'Content-type': 'application/json'}
 	rst = requests.post("http://andrewlewis.pythonanywhere.com/currentWall/", 
 		headers = headers, json={'currentWall': '0', 'deviceID': '-1'})
@@ -54,7 +55,10 @@ def service():
 	current_config = rst['currentWall']
 	if pre != current_config:
 		pre = current_config
-		wall.exe_config(current_config)
+		if current_config == 0:
+			wall.reset()
+		else:
+			wall.exe_config(current_config)
 	#print(current_config)
 def run():
 	print('Resetting...', end='\r')
@@ -62,7 +66,6 @@ def run():
 	if code != 201:
 		print('Resetting faild! Error response code %d'%code)
 		return
-	wall.reset()
 	print('Resetting... Successed! reset to 0', end='\r\n')
 	scheduler = RepeatedTimer(1, service)
 

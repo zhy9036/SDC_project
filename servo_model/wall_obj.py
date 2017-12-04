@@ -154,6 +154,9 @@ class SDC_wall:
 				
 		
 	def is_running(self):
+		to_delete = [t for t in self.thread_list if not t.isAlive()]
+		for old in to_delete:
+			del(old)
 		self.thread_list = [t for t in self.thread_list if t.isAlive()]
 		return self.thread_list != []
 
