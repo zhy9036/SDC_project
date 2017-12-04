@@ -136,15 +136,19 @@ class SDC_wall:
 			print("Executing config %d" % self.current_config, end='\r')
 			if cur == 0: # resetting
 				self.reset()
+				print("Wall is updating to config %d" % self.current_config)
 			else:
 				edge_l = self.config_dict[cur]['edge']
 				action_l = self.config_dict[cur]['action']
 				for i in range(len(edge_l)):
 					self.edge_action(edge_l[i], action_l[i])
 				self.current_config = cur
-				print("Wall updated to config %d" % self.current_config)
-		e_t = time()
-		print("Job finished in %f seconds" % (e_t - s_t))
+				print("Wall is updating to config %d" % self.current_config)
+		if not self.is_running:
+			e_t = time()
+			print("Job finished in %f seconds" % (e_t - s_t))
+			
+			print("\n\nNo job to do, stand by...", end = '\r')
 				
 		
 	def is_running(self):
