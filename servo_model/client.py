@@ -48,6 +48,7 @@ def reset_model():
 
 
 def service():
+	global pre
 	rst = req.urlopen("http://andrewlewis.pythonanywhere.com/currentWall").read()
 	rst = json.loads(rst.decode("utf-8"))	#bytes to string
 	current_config = rst['currentWall']
