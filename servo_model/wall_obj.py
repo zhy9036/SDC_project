@@ -31,6 +31,7 @@ class SDC_wall:
 		max_config=default_max_config):
 		self.current_config = 0
 		self.thread_list = []
+		self.job_queue = []
 		self.pin_list = pin_list
 		self.edge_dict = edge_dict
 		self.config_dict = config_dict
@@ -100,16 +101,17 @@ class SDC_wall:
 			
 			
 	def gen_job_queue(self, config):
-		job_queue = []
+		if self.job_queue != []:
+			return 
 		if config > self.max_config or config < 0:
-			return job_queue
+			return self.job_queue
 		if config > self.current_config:
-			job_queue = [k for k in range(self.current_config + 1, config + 1)]
+			self.job_queue = [k for k in range(self.current_config + 1, config + 1)]
 		elif config < self.current_config:
 			a = [k for k in range(self.current_config + 1, self.max_config+1)]
 			b = [k for k in range(0, config+1)]
-			job_queue = a + b
-		return job_queue
+			self.job_queue = a + b
+		return self.job_queue
 		
 		
 	def reset(self):
@@ -120,18 +122,17 @@ class SDC_wall:
 		
 		
 	def exe_config(self, config):
-		
-		job_queue = self.gen_job_queue(config)
-		if job_queue == []:
+		self.gen_job_queue(config)
+		if self.job_queue == []:
 			print("No job to do, stand by...", end = '\r')
 			return
 		s_t = time()
-		while(job_queue != []):
+		while(self.job_queue != []):
 			if self.is_running():
 				print("Wall is moving, config %d" % self.current_config, end='\r')
 				continue
-			cur = job_queue[0]
-			job_queue = job_queue[1:]
+			cur = self.job_queue[0]
+			self.job_queue = self.job_queue[1:]
 			print("Executing config %d" % self.current_config, end='\r')
 			if cur == 0: # resetting
 				self.reset()
