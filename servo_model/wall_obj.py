@@ -5,9 +5,6 @@
 from enum import Enum
 import _thread
 import threading
-import urllib.request as req
-from threading import Timer
-import json
 import RPi.GPIO as GPIO
 from time import sleep, time
 
@@ -16,16 +13,30 @@ class Action(Enum):
 	CLOSE = False
 
 class SDC_wall:
-	thread_list = []
-	pin_list = [21, 20, 16, 19, 13, 6]
-	edge_dict = {'a':{'pins':[21, 20], 'status': Action.CLOSE, 'speeds': [76, 115, 115, 75], 'timers': [3.3, 3.8, 1.5, 6]},
-				 'b':{'pins':[16, 19], 'status': Action.CLOSE, 'speeds': [77, 115, 115, 75], 'timers': [3.3, 3.3, 1.8, 6]},
-				 'c':{'pins':[13, 6], 'status': Action.CLOSE, 'speeds': [77, 115, 115, 76], 'timers': [3.1, 3.3, 0.8, 6]},
-				 }
-
 		
 	def __init__(self):
 		self.setup_GPIO(GPIO.BCM, SDC_wall.pin_list)
+		self.curent_config = 0
+		self.max_config = 4
+		self.config_dict = {1 : {'edge': ['a'], 'action':[Action.OPEN]},
+					   2 : {'edge': ['b'], 'action':[Action.OPEN]},
+					   3 : {'edge': ['c'], 'action':[Action.OPEN]},
+					   4 : {'edge': ['a', 'b', 'c'], 'action':[Action.CLOSE, Action.CLOSE, Action.CLOSE]},}
+		self.thread_list = []
+		self.pin_list = [21, 20, 16, 19, 13, 6]
+		self.edge_dict = {'a':{'pins':[21, 20], 'status': Action.CLOSE, 'speeds': [76, 115, 115, 75], 'timers': [3.3, 3.8, 1.5, 6]},
+					 'b':{'pins':[16, 19], 'status': Action.CLOSE, 'speeds': [77, 115, 115, 75], 'timers': [3.3, 3.3, 1.8, 6]},
+					 'c':{'pins':[13, 6], 'status': Action.CLOSE, 'speeds': [77, 115, 115, 76], 'timers': [3.1, 3.3, 0.8, 6]},
+					 }
+	
+	def __init__(self, pin_list, edge_dict, config_dict, max_config):
+		self.setup_GPIO(GPIO.BCM, SDC_wall.pin_list)
+		self.curent_config = 0
+		thread_list = []
+		self.pin_list = pin_list
+		self.edge_dict = edge_dict
+		self.config_dict = config_dict
+		self.max_config = max_config
 		
 	def __del__(self):
 		self.cleanup_GPIO(SDC_wall.pin_list)
@@ -55,9 +66,6 @@ class SDC_wall:
 		
 		
 	def edge_action(self, edge, action):
-		if self.is_running():
-			print('Model is running, waiting...', end='\r')
-			return
 		pins= self.edge_dict[edge]['pins']
 		open_timer = self.edge_dict[edge]['timers'][:2]
 		open_spd = self.edge_dict[edge]['speeds'][:2]
@@ -90,6 +98,53 @@ class SDC_wall:
 			self.thread_list.append(t2)
 			self.edge_dict[edge]['status'] = Action.CLOSE
 			
+			
+	def gen_job_queue(self, config):
+		job_queue = []
+		if config > max_config or config < 0
+			return job_queue
+		if config > current_config:
+			job_queue = [k for k in range(current_config + 1, config + 1)]
+		elif config < current_config:
+			a = [k for k in range(current_config + 1, self.max_config+1)]
+			b = [k for k in range(0, config+1)]
+			job_queue = a + b
+		return job_queue
+		
+		
+	def reset(self):
+		for edge in self.edge_dict:
+			if self.edge_dict[edge]['status'] == Action.OPEN:
+				self.edge_action(edge, Action.CLOSE)
+		self.config = 0
+		
+		
+	def exe_config(self, config):
+		
+		job_queue = self.gen_job_queue(config)
+		if job_queue == []:
+			print("No job to do, stand by...", end = '\r')
+		s_t = time.time()
+		while(job_queue != []):
+			if self.is_running():
+				print("Wall is moving, config %d" % current_config, end='\r')
+				continue
+			cur = job_queue[0]
+			job_queue = job_queue[1:]
+			print("Executing config %d" % current_config, end='\r')
+			if cur == 0: # resetting
+				self.reset()
+			else:
+				edge_l = self.config_dict[cur]['edge']
+				action_l = self.config_dict[cur]['action']
+				for i in range(len(edge_l)):
+					self.edge_action(edge_l[i], action_l[i])
+				self.config = cur
+				print("Wall updated to config %d" % self.config)
+		e_t = time.time()
+		print("Job finished in %f seconds" % (e_t - s_t))
+				
+		
 	def is_running(self):
 		self.thread_list = [t for t in self.thread_list if t.isAlive()]
 		return self.thread_list != []
