@@ -101,12 +101,12 @@ class SDC_wall:
 			
 	def gen_job_queue(self, config):
 		job_queue = []
-		if config > max_config or config < 0:
+		if config > self.max_config or config < 0:
 			return job_queue
-		if config > current_config:
-			job_queue = [k for k in range(current_config + 1, config + 1)]
-		elif config < current_config:
-			a = [k for k in range(current_config + 1, self.max_config+1)]
+		if config > self.current_config:
+			job_queue = [k for k in range(self.current_config + 1, config + 1)]
+		elif config < self.current_config:
+			a = [k for k in range(self.current_config + 1, self.max_config+1)]
 			b = [k for k in range(0, config+1)]
 			job_queue = a + b
 		return job_queue
@@ -124,6 +124,7 @@ class SDC_wall:
 		job_queue = self.gen_job_queue(config)
 		if job_queue == []:
 			print("No job to do, stand by...", end = '\r')
+			return
 		s_t = time.time()
 		while(job_queue != []):
 			if self.is_running():
