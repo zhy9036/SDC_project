@@ -13,23 +13,23 @@ class Action(Enum):
 	CLOSE = False
 
 class SDC_wall:
-		
-	def __init__(self):
-		self.setup_GPIO(GPIO.BCM, SDC_wall.pin_list)
-		self.curent_config = 0
-		self.max_config = 4
-		self.config_dict = {1 : {'edge': ['a'], 'action':[Action.OPEN]},
+	default_max_config = 4
+	default_config_dict = {1 : {'edge': ['a'], 'action':[Action.OPEN]},
 					   2 : {'edge': ['b'], 'action':[Action.OPEN]},
 					   3 : {'edge': ['c'], 'action':[Action.OPEN]},
 					   4 : {'edge': ['a', 'b', 'c'], 'action':[Action.CLOSE, Action.CLOSE, Action.CLOSE]},}
-		self.thread_list = []
-		self.pin_list = [21, 20, 16, 19, 13, 6]
-		self.edge_dict = {'a':{'pins':[21, 20], 'status': Action.CLOSE, 'speeds': [76, 115, 115, 75], 'timers': [3.3, 3.8, 1.5, 6]},
+	
+	default_pin_list = [21, 20, 16, 19, 13, 6]
+	default_edge_dict = {'a':{'pins':[21, 20], 'status': Action.CLOSE, 'speeds': [76, 115, 115, 75], 'timers': [3.3, 3.8, 1.5, 6]},
 					 'b':{'pins':[16, 19], 'status': Action.CLOSE, 'speeds': [77, 115, 115, 75], 'timers': [3.3, 3.3, 1.8, 6]},
 					 'c':{'pins':[13, 6], 'status': Action.CLOSE, 'speeds': [77, 115, 115, 76], 'timers': [3.1, 3.3, 0.8, 6]},
 					 }
+
 	
-	def __init__(self, pin_list, edge_dict, config_dict, max_config):
+	def __init__(self, pin_list=default_pin_list, 
+		edge_dict=default_edge_dict, config_dict=default_config_dict, 
+		max_config=default_max_config):
+		
 		self.setup_GPIO(GPIO.BCM, SDC_wall.pin_list)
 		self.curent_config = 0
 		thread_list = []
