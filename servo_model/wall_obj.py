@@ -14,7 +14,7 @@ class Action(Enum):
 
 class SDC_wall:
 	default_max_config = 4
-	default_config_dict = {0 : {},
+	default_config_dict = {
 						   1 : {'edge': ['a'], 'action':[Action.OPEN]},
 						   2 : {'edge': ['b'], 'action':[Action.OPEN]},
 					       3 : {'edge': ['c'], 'action':[Action.OPEN]},
@@ -145,7 +145,7 @@ class SDC_wall:
 					self.edge_action(edge_l[i], action_l[i])
 				self.current_config = cur
 				print("Wall is updating to config %d" % self.current_config)
-		while self.is_running:
+		while self.is_running():
 			pass
 		e_t = time()
 		print("Job finished in %f seconds" % (e_t - s_t))
