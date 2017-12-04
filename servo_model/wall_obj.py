@@ -14,10 +14,11 @@ class Action(Enum):
 
 class SDC_wall:
 	default_max_config = 4
-	default_config_dict = {1 : {'edge': ['a'], 'action':[Action.OPEN]},
-					   2 : {'edge': ['b'], 'action':[Action.OPEN]},
-					   3 : {'edge': ['c'], 'action':[Action.OPEN]},
-					   4 : {'edge': ['a', 'b', 'c'], 'action':[Action.CLOSE, Action.CLOSE, Action.CLOSE]},}
+	default_config_dict = {0 : {},
+						   1 : {'edge': ['a'], 'action':[Action.OPEN]},
+						   2 : {'edge': ['b'], 'action':[Action.OPEN]},
+					       3 : {'edge': ['c'], 'action':[Action.OPEN]},
+					       4 : {'edge': ['a', 'b', 'c'], 'action':[Action.CLOSE, Action.CLOSE, Action.CLOSE]},}
 	
 	default_pin_list = [21, 20, 16, 19, 13, 6]
 	default_edge_dict = {'a':{'pins':[21, 20], 'status': Action.CLOSE, 'speeds': [76, 115, 115, 75], 'timers': [3.3, 3.8, 1.5, 6]},
@@ -144,7 +145,7 @@ class SDC_wall:
 					self.edge_action(edge_l[i], action_l[i])
 				self.current_config = cur
 				print("Wall is updating to config %d" % self.current_config)
-		while not self.is_running:
+		while self.is_running:
 			pass
 		e_t = time()
 		print("Job finished in %f seconds" % (e_t - s_t))
