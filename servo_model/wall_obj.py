@@ -29,17 +29,17 @@ class SDC_wall:
 	def __init__(self, pin_list=default_pin_list, 
 		edge_dict=default_edge_dict, config_dict=default_config_dict, 
 		max_config=default_max_config):
-		
-		self.setup_GPIO(GPIO.BCM, SDC_wall.pin_list)
 		self.curent_config = 0
 		thread_list = []
 		self.pin_list = pin_list
 		self.edge_dict = edge_dict
 		self.config_dict = config_dict
 		self.max_config = max_config
+		self.setup_GPIO(GPIO.BCM, self.pin_list)
+		
 		
 	def __del__(self):
-		self.cleanup_GPIO(SDC_wall.pin_list)
+		self.cleanup_GPIO(self.pin_list)
 
 	def setup_GPIO(self, mode, pins):
 		GPIO.cleanup()
