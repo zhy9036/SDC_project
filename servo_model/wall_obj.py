@@ -125,7 +125,7 @@ class SDC_wall:
 		if job_queue == []:
 			print("No job to do, stand by...", end = '\r')
 			return
-		s_t = time.time()
+		s_t = time()
 		while(job_queue != []):
 			if self.is_running():
 				print("Wall is moving, config %d" % current_config, end='\r')
@@ -142,7 +142,7 @@ class SDC_wall:
 					self.edge_action(edge_l[i], action_l[i])
 				self.config = cur
 				print("Wall updated to config %d" % self.config)
-		e_t = time.time()
+		e_t = time()
 		print("Job finished in %f seconds" % (e_t - s_t))
 				
 		
