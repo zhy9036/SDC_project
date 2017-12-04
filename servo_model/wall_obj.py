@@ -118,7 +118,7 @@ class SDC_wall:
 		for edge in self.edge_dict:
 			if self.edge_dict[edge]['status'] == Action.OPEN:
 				self.edge_action(edge, Action.CLOSE)
-		self.config = 0
+		self.current_config = 0
 		
 		
 	def exe_config(self, config):
@@ -141,8 +141,8 @@ class SDC_wall:
 				action_l = self.config_dict[cur]['action']
 				for i in range(len(edge_l)):
 					self.edge_action(edge_l[i], action_l[i])
-				self.config = cur
-				print("Wall updated to config %d" % self.config)
+				self.current_config = cur
+				print("Wall updated to config %d" % self.current_config)
 		e_t = time()
 		print("Job finished in %f seconds" % (e_t - s_t))
 				

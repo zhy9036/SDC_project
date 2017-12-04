@@ -3,7 +3,7 @@ import requests
 import urllib.request as req
 from threading import Timer
 import json
-curent_config = 0
+pre = -1
 wall = SDC_wall()
 
 class RepeatedTimer(object):
@@ -51,7 +51,8 @@ def service():
 	rst = req.urlopen("http://andrewlewis.pythonanywhere.com/currentWall").read()
 	rst = json.loads(rst.decode("utf-8"))	#bytes to string
 	current_config = rst['currentWall']
-	if wall.job_queue == []:
+	if pre != current_config:
+		pre = current_config
 		wall.exe_config(current_config)
 	#print(current_config)
 def run():
