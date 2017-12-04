@@ -101,7 +101,7 @@ class SDC_wall:
 			
 	def gen_job_queue(self, config):
 		job_queue = []
-		if config > max_config or config < 0
+		if config > max_config or config < 0:
 			return job_queue
 		if config > current_config:
 			job_queue = [k for k in range(current_config + 1, config + 1)]
