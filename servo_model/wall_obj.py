@@ -15,15 +15,14 @@ class Action(Enum):
 
 class SDC_wall:
 	default_max_config = 4
-	default_config_dict = {
-						   1 : {'edge': ['a'], 'action':[Action.OPEN]},
-						   2 : {'edge': ['b'], 'action':[Action.OPEN]},
-					       3 : {'edge': ['c'], 'action':[Action.OPEN]},
-					       4 : {'edge': ['a', 'b', 'c'], 'action':[Action.CLOSE, Action.CLOSE, Action.CLOSE]},}
+	default_config_dict = {1 : {'edge': ['a'], 'action':[Action.OPEN]},
+			2 : {'edge': ['b'], 'action':[Action.OPEN]},
+			3 : {'edge': ['c'], 'action':[Action.OPEN]},
+			4 : {'edge': ['a', 'b', 'c'], 'action':[Action.CLOSE, Action.CLOSE, Action.CLOSE]},}
 	
 	default_pin_list = [21, 20, 16, 19, 13, 6]
-	default_edge_dict = {'a':{'pins':[21, 20], 'status': Action.CLOSE, 'speeds': [76, 115, 115, 75], 'timers': [3.3, 3.8, 1.5, 6]},
-					 'b':{'pins':[16, 19], 'status': Action.CLOSE, 'speeds': [77, 115, 115, 75], 'timers': [3.3, 3.3, 1.8, 6]},
+	default_edge_dict = {'a':{'pins':[21, 20], 'status': Action.CLOSE, 'speeds': [66, 115, 115, 67], 'timers': [3.3, 3.8, 1.5, 6]},
+					 'b':{'pins':[16, 19], 'status': Action.CLOSE, 'speeds': [45, 125, 110, 67], 'timers': [3.3, 3.3, 1.8, 6]},
 					 'c':{'pins':[13, 6], 'status': Action.CLOSE, 'speeds': [77, 115, 115, 76], 'timers': [3.1, 3.3, 0.8, 6]},
 					 }
 
@@ -142,7 +141,10 @@ class SDC_wall:
 		
 		
 	def exe_config(self, config):
-		self.gen_job_queue(config)
+		if config == 0:
+			self.reset()
+		else:
+			self.gen_job_queue(config)
 		#print(self.job_queue)
 		if self.job_queue == []:
 			print("No job to do, stand by...", end = '\r')

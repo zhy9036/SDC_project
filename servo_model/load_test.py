@@ -13,7 +13,7 @@ while True:
 	if rst.status_code == 201:
 		iteration += 1
 		print('testing... %d' % iteration, end = '\r')
-		time.sleep(30)
+		time.sleep(18)
 	else:
 		break
 	headers = {'Content-type': 'application/json'}

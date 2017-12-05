@@ -56,10 +56,7 @@ def service():
 	#print(current_config)
 	if pre != current_config:
 		pre = current_config
-		if current_config == 0:
-			wall.reset()
-		else:
-			wall.exe_config(current_config)
+		wall.exe_config(current_config)
 	#print(current_config)
 	
 def handler(signum, frame):
@@ -68,17 +65,21 @@ def handler(signum, frame):
 		print('cleaned')
 
 def run():
+	print('\nResetting...', end='\r')
 	global pre
 	signal.signal(signal.SIGINT, handler)
-	print('\nResetting...', end='\r')
+	
 	code = reset_model()	
 	if code != 201:
 		print('Resetting faild! Error response code %d'%code)
 		return
+	while wall.is_running():
+		pass
 	print('Resetting... Successed! reset to 0', end='\r\n')
+	print('No job to do, stand by...')
 	pre = 0
 	scheduler = RepeatedTimer(1, service)
-
+	
 	
 run()
 
