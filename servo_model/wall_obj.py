@@ -21,9 +21,9 @@ class SDC_wall:
 			4 : {'edge': ['a', 'b', 'c'], 'action':[Action.CLOSE, Action.CLOSE, Action.CLOSE]},}
 	
 	default_pin_list = [21, 20, 16, 19, 13, 6]
-	default_edge_dict = {'a':{'pins':[21, 20], 'status': Action.CLOSE, 'speeds': [66, 115, 115, 67], 'timers': [3.3, 3.8, 1.5, 6]},
-					 'b':{'pins':[16, 19], 'status': Action.CLOSE, 'speeds': [45, 125, 110, 67], 'timers': [3.3, 3.3, 1.8, 6]},
-					 'c':{'pins':[13, 6], 'status': Action.CLOSE, 'speeds': [77, 115, 115, 76], 'timers': [3.1, 3.3, 0.8, 6]},
+	default_edge_dict = {'a':{'pins':[21, 20], 'status': Action.CLOSE, 'speeds': [68, 119, 128, 66], 'timers': [3.3, 3.8, 1.5, 6]},
+					 'b':{'pins':[16, 19], 'status': Action.CLOSE, 'speeds': [55, 125, 122, 61], 'timers': [3.3, 3.3, 1.8, 6]},
+					 'c':{'pins':[13, 6], 'status': Action.CLOSE, 'speeds': [63, 125, 120, 66], 'timers': [3.1, 3.3, 0.8, 6]},
 					 }
 
 	

@@ -3,9 +3,10 @@ import RPi.GPIO as GPIO
 import pigpio
 import time
 
+pin = int(input("pin? ")) 
 pi = pigpio.pi()
-pi.set_mode(21, pigpio.OUTPUT)
-pi.set_PWM_frequency(21, 50)
+pi.set_mode(pin, pigpio.OUTPUT)
+pi.set_PWM_frequency(pin, 50)
 #pi.set_mode(21, pigpio.INPUT)
 #pi.stop()
 #GPIO.setmode(GPIO.BCM)
@@ -15,21 +16,22 @@ pi.set_PWM_frequency(21, 50)
 
 class App:
 
-    def __init__(self, master):
-        frame = Frame(master)
-        frame.pack()
-        scale = Scale(frame, from_=0, to=180,
+	def __init__(self, master):
+		frame = Frame(master)
+		frame.pack()
+		scale = Scale(frame, from_=0, to=180,
               orient=HORIZONTAL, command=self.update)
-        scale.grid(row=0)
+		scale.grid(row=0)
+		scale.set(90)
 
 
-    def update(self, angle):
+	def update(self, angle):
         #duty = float(angle) / 18+ 2
         #pwm.ChangeDutyCycle(duty)
         #pi.set_PWM_dutycycle(21, duty)
-        pw = 1000 + int(float(angle) * 5.56)
-        print(pw)
-        pi.set_servo_pulsewidth(21, pw)
+		pw = 1000 + int(float(angle) * 5.56)
+		#print(pw)
+		pi.set_servo_pulsewidth(pin, pw)
 
 root = Tk()
 root.wm_title('Servo Control')
