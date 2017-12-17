@@ -1,0 +1,8 @@
+{
+  "name": "shapeWall",
+  "description": "control shaped wall through alexa",
+  "memory": 128,
+  "timeout": 5,
+  "role": "arn:aws:iam::165163786086:role/shapeWall_lambda_function",
+  "environment": {}
+}
